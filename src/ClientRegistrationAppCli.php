@@ -1,10 +1,17 @@
 <?php
 namespace Edvardas;
 
+use Edvardas\Commands\CommandParser;
+use Edvardas\Output\CliOutput;
+
 class ClientRegistrationAppCli{
     
     public function __construct(){
-        echo "created ".self::class." stub \n";
+    }
+
+    public function executeCommand(): void {
+        $cmd = (new CommandParser())->getCommand();
+        $cmd->execute();
     }
     
 }

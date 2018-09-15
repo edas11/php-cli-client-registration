@@ -24,6 +24,7 @@ final class CommandsTest extends TestCase {
                 ->getMock();
         $this->out = $this->getMockBuilder(CliOutput::class)
                 ->setMethods(['printSuccess', 'printClients', 'printHelpMessage'])
+                ->disableOriginalConstructor()
                 ->getMock();
     }
 

@@ -5,9 +5,16 @@ use Edvardas\Commands\Messages\HelpMessage;
 
 class CliOutput{
     
-    public function __construct(){
+    private static $outputInstance;
+
+    private function __construct(){
     }
     
+    public static function get() {
+        if (is_null(self::$outputInstance)) self::$outputInstance = new CliOutput();
+        return self::$outputInstance;
+    }
+
     public function printHelpMessage(array $helpMsg): void {
         foreach($helpMsg as $msg) {
             if (!$msg instanceof HelpMessage) { 
@@ -21,10 +28,24 @@ class CliOutput{
             echo "\n\n";
         }
     }
+
     public function printSuccess(string $successMsg): void {
-
+        echo 'Success: '.$successMsg.'\n';
     }
-    public function printClients(array $clients): void {
 
+    public function printError(string $errorMsg): void {
+        echo 'Error: '.$errorMsg.'\n';
+    }
+
+    public function printClients(array $clients): void {
+        echo 'Firstname\tLastname\tEmail\tPhonenumber1\tPhonenumber2\tComment\n';
+        foreach($clients as $client) {
+            echo $client->getFirstname().'\t'.
+                $client->getLastname().'\t'.
+                $client->getEmail().'\t'.
+                $client->getPhonenumber1().'\t'.
+                $client->getPhonenumber2().'\t'.
+                $client->getComment().'\n';
+        }
     }
 }

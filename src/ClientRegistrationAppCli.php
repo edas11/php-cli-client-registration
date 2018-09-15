@@ -10,8 +10,12 @@ class ClientRegistrationAppCli{
     }
 
     public function executeCommand(): void {
-        $cmd = (new CommandParser())->getCommand();
-        $cmd->execute();
+        try {
+            $cmd = (new CommandParser())->getCommand();
+            $cmd->execute();
+        } catch (\Exception $e) {
+            CliOutput::get()->printError($e->getMessage());
+        }
     }
     
 }

@@ -4,15 +4,11 @@ declare(strict_types=1);
 use Edvardas\Output\CliOutput;
 use Edvardas\Commands\Messages\HelpMessage;
 use PHPUnit\Framework\TestCase;
+use Edvardas\Clients\Client;
 
 final class CliOutputTest extends TestCase {
-    public function testCanBeCreated(): void
-    {
-        $obj = new CliOutput();
-        $this->assertInstanceOf(CliOutput::class, $obj);
-    }
     public function testCanPrintHelpMessagesFromMessageArray(): void {
-        $out = new CliOutput();
+        $out = CliOutput::get();
         $msg1 = new HelpMessage("a", "b", "c");
         $msg2 = new HelpMessage("d", "e", "f");
         $msg3 = new HelpMessage("g", "h", "i");
@@ -24,14 +20,33 @@ final class CliOutputTest extends TestCase {
                         "g\nDescription: h\nUsage: i\n\n";
         $this->expectOutputString($expectedStr);
     }
+    public function testCanPrintClientsInfo(): void {
+        $clients = [new Client('a', 'b', 'g@g.g', '8', '8', 'c'),
+            new Client('a', 'b', 'gg@g.g', '8', '8', 'c')];
+        $out = CliOutput::get();
+        $out->printClients($clients);
+        $this->expectOutputString('Firstname\tLastname\tEmail\tPhonenumber1\tPhonenumber2\tComment\n'.
+                                'a\tb\tg@g.g\t8\t8\tc\n'.
+                                'a\tb\tgg@g.g\t8\t8\tc\n');
+    }
+    public function testCanPrintSuccesMessage(): void {
+        $out = CliOutput::get();
+        $out->printSuccess('test');
+        $this->expectOutputString('Success: test\n');
+    }
+    public function testCanPrintErrorMessage(): void {
+        $out = CliOutput::get();
+        $out->printError('test');
+        $this->expectOutputString('Error: test\n');
+    }
     public function testDoesntPrintHelpMessageIfMessagesArrayEmpty(): void {
-        $out = new CliOutput();
+        $out = CliOutput::get();
         $out->printHelpMessage([]);
         $this->expectOutputString("");
     }
     public function testThrowsErrorIfHelpMessagesArrayHasNonMessageObjects(): void {
         $this->expectException(InvalidArgumentException::class);
-        $out = new CliOutput();
+        $out = CliOutput::get();
         $out->printHelpMessage([null, $out]);
     }
 }

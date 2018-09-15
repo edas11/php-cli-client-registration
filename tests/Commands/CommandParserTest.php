@@ -5,7 +5,7 @@ use Edvardas\Commands\CommandParser;
 use PHPUnit\Framework\TestCase;
 
 final class CommandParserTest extends TestCase {
-    public function testCanBeCreated(): void
+    public function testParsesAddCommand(): void
     {
         $obj = new CommandParser();
         $this->assertInstanceOf(CommandParser::class, $obj);

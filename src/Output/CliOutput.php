@@ -21,4 +21,10 @@ class CliOutput{
             echo "\n\n";
         }
     }
+    public function printSuccess(string $successMsg): void {
+
+    }
+    public function printClients(array $clients): void {
+
+    }
 }

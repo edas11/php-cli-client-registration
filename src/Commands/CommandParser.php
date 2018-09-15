@@ -80,6 +80,7 @@ class CommandParser{
             }
         }
         if($argAfterOptionsIndex == -1) throw new \UnexpectedValueException('Edit command expects a few options (with --) followed by one email argument');
+        if($argAfterOptionsIndex == 2) throw new \LengthException('Enter at least one option (with --)');
         return $argAfterOptionsIndex;
     }
 
@@ -110,6 +111,8 @@ class CommandParser{
                 case 'comment':
                     $input->comment = $fieldValue;
                     break;
+                default:
+                    throw new \InvalidArgumentException("Option $fieldName is not valid");
             }
         }
         return $input;

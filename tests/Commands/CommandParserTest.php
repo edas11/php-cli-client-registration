@@ -146,13 +146,21 @@ final class CommandParserTest extends TestCase {
             $this->expectExceptionMessage('Edit command expects a few options (with --) followed by one email argument');
         $cmdParser->getCommand();
     }
-    public function testParsingEditThrowsExceptionIfOptionHasNoValue(): void {
+    public function testParsingEditThrowsExceptionIfOptionIsWrong(): void {
         global $argv;
         $cmdParser = new CommandParser(); 
-        $argv = ['', 'edit', '--firstname=bob', '--lastname=bob', '--email', '--phonenumber1=8',
+        $argv = ['', 'edit', '--asqw=bob', '--phonenumber1=8',
             '--phonenumber2=8', 'email'];
             $this->expectException(\InvalidArgumentException::class);
-            $this->expectExceptionMessage("Option email has no value");
+            $this->expectExceptionMessage("Option asqw is not valid");
+        $cmdParser->getCommand();
+    }
+    public function testParsingEditThrowsExceptionIfNoOptions(): void {
+        global $argv;
+        $cmdParser = new CommandParser(); 
+        $argv = ['', 'edit', 'email'];
+            $this->expectException(\LengthException::class);
+            $this->expectExceptionMessage("Enter at least one option (with --)");
         $cmdParser->getCommand();
     }
     

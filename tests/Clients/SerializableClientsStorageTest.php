@@ -31,19 +31,19 @@ final class SerializableClientsStorageTest extends TestCase {
     }
     public function testThrowsExceptionIfAskedForNonexistentClient(): void {
         $this->expectException(\OutOfBoundsException::class);
-        $this->expectExceptionMessage('Client with abc not found');
+        $this->expectExceptionMessage('Client with email abc not found');
         $this->storage->get('abc');
     }
     public function testCanDeleteClient(): void{
         $this->storage->delete('de@g.g');
         $this->assertSame([$this->data[0], $this->data[2]], $this->storage->getAll());
         $this->expectException(\OutOfBoundsException::class);
-        $this->expectExceptionMessage('Client with de@g.g not found');
+        $this->expectExceptionMessage('Client with email de@g.g not found');
         $this->storage->get('de@g.g');
     }
     public function testThrowsExceptionIfAskedToDeleteNonexistentClient(): void{
         $this->expectException(\OutOfBoundsException::class);
-        $this->expectExceptionMessage('Client with abc not found');
+        $this->expectExceptionMessage('Client with email abc not found');
         $this->storage->delete('abc');
     }
     public function testCanReplaceClient(): void{
@@ -51,12 +51,12 @@ final class SerializableClientsStorageTest extends TestCase {
         $this->storage->replace('de@g.g', $new);
         $this->assertSame([$this->data[0], $new, $this->data[2]], $this->storage->getAll());
         $this->expectException(\OutOfBoundsException::class);
-        $this->expectExceptionMessage('Client with de@g.g not found');
+        $this->expectExceptionMessage('Client with email de@g.g not found');
         $this->storage->get('de@g.g');
     }
     public function testThrowsExceptionIfAskedToReplaceNonexistentClient(): void{
         $this->expectException(\OutOfBoundsException::class);
-        $this->expectExceptionMessage('Client with abc not found');
+        $this->expectExceptionMessage('Client with email abc not found');
         $this->storage->replace('abc', new Client('a', 'a', 'new@g.g', '', '', ''));
     }
 }

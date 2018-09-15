@@ -25,19 +25,19 @@ final class CliOutputTest extends TestCase {
             new Client('a', 'b', 'gg@g.g', '8', '8', 'c')];
         $out = CliOutput::get();
         $out->printClients($clients);
-        $this->expectOutputString('Firstname\tLastname\tEmail\tPhonenumber1\tPhonenumber2\tComment\n'.
-                                'a\tb\tg@g.g\t8\t8\tc\n'.
-                                'a\tb\tgg@g.g\t8\t8\tc\n');
+        $this->expectOutputString("Firstname\tLastname\tEmail\tPhonenumber1\tPhonenumber2\tComment\n".
+                                "a\tb\tg@g.g\t8\t8\tc\n".
+                                "a\tb\tgg@g.g\t8\t8\tc\n");
     }
     public function testCanPrintSuccesMessage(): void {
         $out = CliOutput::get();
         $out->printSuccess('test');
-        $this->expectOutputString('Success: test\n');
+        $this->expectOutputString("Success: test\n");
     }
     public function testCanPrintErrorMessage(): void {
         $out = CliOutput::get();
         $out->printError('test');
-        $this->expectOutputString('Error: test\n');
+        $this->expectOutputString("Error: test\n");
     }
     public function testDoesntPrintHelpMessageIfMessagesArrayEmpty(): void {
         $out = CliOutput::get();

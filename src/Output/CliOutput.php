@@ -30,22 +30,22 @@ class CliOutput{
     }
 
     public function printSuccess(string $successMsg): void {
-        echo 'Success: '.$successMsg.'\n';
+        echo 'Success: '.$successMsg."\n";
     }
 
     public function printError(string $errorMsg): void {
-        echo 'Error: '.$errorMsg.'\n';
+        echo 'Error: '.$errorMsg."\n";
     }
 
     public function printClients(array $clients): void {
-        echo 'Firstname\tLastname\tEmail\tPhonenumber1\tPhonenumber2\tComment\n';
+        echo "Firstname\tLastname\tEmail\tPhonenumber1\tPhonenumber2\tComment\n";
         foreach($clients as $client) {
-            echo $client->getFirstname().'\t'.
-                $client->getLastname().'\t'.
-                $client->getEmail().'\t'.
-                $client->getPhonenumber1().'\t'.
-                $client->getPhonenumber2().'\t'.
-                $client->getComment().'\n';
+            echo $client->getFirstname()."\t".
+                $client->getLastname()."\t".
+                $client->getEmail()."\t".
+                $client->getPhonenumber1()."\t".
+                $client->getPhonenumber2()."\t".
+                $client->getComment()."\n";
         }
     }
 }

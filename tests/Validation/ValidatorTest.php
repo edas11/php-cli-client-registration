@@ -19,6 +19,7 @@ final class ValidatorTest extends TestCase {
         $this->assertFalse(Validator::phonenumber('abcd'));
         $this->assertFalse(Validator::phonenumber('88888888888888888888888888888888888'));
         $this->assertTrue(Validator::phonenumber('+370 555 66666'));
+        $this->assertTrue(Validator::phonenumber(''));
         $this->assertTrue(Validator::phonenumber('37055566666'));
         $this->assertTrue(Validator::phonenumber('(8-654) 44444'));
         $this->assertTrue(Validator::phonenumber('865444444'));

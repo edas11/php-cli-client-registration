@@ -10,7 +10,7 @@ class Validator{
         return !empty($value);
     }
     public static function phonenumber(string $value): bool{
-        if (!preg_match('/^[0-9+ ()-]+$/', $value)) return false;
+        if (!preg_match('/^[0-9+ ()-]*$/', $value)) return false;
         $testVal = str_replace('+', '', $value);
         $testVal = str_replace(' ', '', $testVal);
         $testVal = str_replace('-', '', $testVal);

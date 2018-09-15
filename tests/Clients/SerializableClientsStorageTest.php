@@ -2,12 +2,14 @@
 declare(strict_types=1);
 
 use Edvardas\Clients\SerializableClientsStorage;
+use Edvardas\Clients\Client;
 use PHPUnit\Framework\TestCase;
 
 final class SerializableClientsStorageTest extends TestCase {
-    public function testCanBeCreated(): void
+    public function testCanAddClient(): void
     {
-        new SerializableClientsStorage();
-        $this->expectOutputString("created Edvardas\Clients\SerializableClientsStorage stub \n");
+        /*$storage = new SerializableClientsStorage(true);
+        $c1 = new Client('', '', '', '', '', '');
+        $storage->add($c1);*/
     }
 }

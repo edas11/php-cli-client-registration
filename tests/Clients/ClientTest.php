@@ -5,9 +5,20 @@ use Edvardas\Clients\Client;
 use PHPUnit\Framework\TestCase;
 
 final class ClientTest extends TestCase {
-    public function testCanBeCreated(): void
-    {
-        new Client();
-        $this->expectOutputString("created Edvardas\Clients\Client stub \n");
+    public function testThrowsExceptionIfEmailEmpty(): void {
+        $this->expectException(\DomainException::class);
+        new Client('a', 'a', '', '', '', 'a');
+    }
+    public function testThrowsExceptionIfEmailNotValid(): void {
+        $this->expectException(\DomainException::class);
+        new Client('a', 'a', 'a', '', '', 'a');
+    }
+    public function testThrowsExceptionIfPhone1NotValid(): void {
+        $this->expectException(\DomainException::class);
+        new Client('a', 'a', 'a@a.com', 'qq', '', 'a');
+    }
+    public function testThrowsExceptionIfPhone2NotValid(): void {
+        $this->expectException(\DomainException::class);
+        new Client('a', 'a', 'a@a.com', '', 'qq', 'a');
     }
 }

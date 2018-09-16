@@ -35,6 +35,11 @@ final class CliOutputTest extends TestCase {
         $out->printSuccess('test');
         $this->expectOutputString("Success: test\n");
     }
+    public function testCanPrintWarningMessage(): void {
+        $out = CliOutput::get();
+        $out->printWarning('test');
+        $this->expectOutputString("Warning: test\n");
+    }
     public function testCanPrintErrorMessage(): void {
         $out = CliOutput::get();
         $out->printError('test');

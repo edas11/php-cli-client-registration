@@ -38,6 +38,10 @@ class CliOutput{
         echo 'Error: '.$errorMsg."\n";
     }
 
+    public function printWarning(string $warningMsg): void {
+        echo 'Warning: '.$warningMsg."\n";
+    }
+
     public function printClients(Clients $clients): void {
         echo "Firstname\tLastname\tEmail\tPhonenumber1\tPhonenumber2\tComment\n";
         foreach($clients as $client) {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 use Edvardas\Commands\CommandParser;
 use PHPUnit\Framework\TestCase;
 use Edvardas\Commands\AddCommand;
+use Edvardas\Commands\AddCsvCommand;
 use Edvardas\Commands\DeleteCommand;
 use Edvardas\Commands\EditCommand;
 use Edvardas\Commands\ListCommand;
@@ -54,6 +55,36 @@ final class CommandParserTest extends TestCase {
             ->setPhonenumber1('d')->setPhonenumber2('e')->setComment('f');
         $this->assertEquals($this->cmdParser->getCommand(), new AddCommand($builder, $this->storage, CliOutput::get()));
     }
+    public function testParsesAddCsvCommand(): void {   
+        global $argv;
+
+        $argv = ['', 'add', '--csv=abc'];
+        $this->assertEquals($this->cmdParser->getCommand(), new AddCsvCommand('abc', $this->storage, CliOutput::get()));
+    }
+    public function testParsingAddCsvCommandThrowsErrorIfNotOptionGiven(): void {   
+        global $argv;
+        $argv = ['', 'add', 'fdhdg'];
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Add Csv commands must get one option --csv');
+        $this->cmdParser->getCommand();
+    }
+    public function testParsingAddCsvCommandThrowsErrorIfMoreThanOneParamGiven(): void {   
+        global $argv;
+        $argv = ['', 'add', 'fdhdg --csv=ll'];
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Add Csv commands must get one option --csv');
+        $this->cmdParser->getCommand();
+    }
+    public function testParsingAddCsvCommandThrowsErrorIfWrongOptionGiven(): void {   
+        global $argv;
+        $argv = ['', 'add', '--asfas=l'];
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Add Csv commands must get one option --csv');
+        $this->cmdParser->getCommand();
+    }
     public function testParsingAddCommandThrowsExceptionIfGetsOptions(): void {   
         global $argv;
         $argv = ['', 'add', '--asd=a', 'b', 'c', 'd', 'e', 'f', 'g'];
@@ -76,6 +107,14 @@ final class CommandParserTest extends TestCase {
 
         $this->expectException(\LengthException::class);
         $this->expectExceptionMessage('Add commands must get 6 arguments');
+        $this->cmdParser->getCommand();
+    }
+    public function testParsingAddCommandThrowsExceptionIfNoParameters(): void {   
+        global $argv;
+        $argv = ['', 'add'];
+
+        $this->expectException(\LengthException::class);
+        $this->expectExceptionMessage('Add commands must get parameters');
         $this->cmdParser->getCommand();
     }
     public function testParsesDeleteCommand(): void {   

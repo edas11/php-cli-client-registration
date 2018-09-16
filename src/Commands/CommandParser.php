@@ -62,6 +62,8 @@ class CommandParser{
     private function getAddCommand() {
         global $argv;
         $optionsAndArguments = $this->parseOptionsAndArguments();
+        if (count($optionsAndArguments)==0) throw new \LengthException('Add commands must get parameters');
+        if (count($optionsAndArguments)==1) return $this->getAddCsvCommand($optionsAndArguments);
         foreach($optionsAndArguments as $param){
             if ($param instanceof Option) throw new \InvalidArgumentException("Add commands must get only arguments (without --)");
         }
@@ -71,6 +73,14 @@ class CommandParser{
             ->setPhonenumber1($optionsAndArguments[3]->getValue())->setPhonenumber2($optionsAndArguments[4]->getValue())
             ->setComment($optionsAndArguments[5]->getValue());
         return new AddCommand($builder, $this->storage, CliOutput::get());
+    }
+
+    private function getAddCsvCommand($optionsAndArguments) {
+        if (count($optionsAndArguments)!==1) throw new \Exception('Add Csv commands must get one option --csv');
+        if (!($optionsAndArguments[0] instanceof Option)) throw new \Exception('Add Csv commands must get one option --csv');
+        if ($optionsAndArguments[0]->getName()!=='csv') throw new \Exception('Add Csv commands must get one option --csv');
+        $csvFileName = $optionsAndArguments[0]->getValue();
+        return new AddCsvCommand($csvFileName, $this->storage, CliOutput::get());
     }
 
     private function getDeleteCommand() {

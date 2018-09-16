@@ -43,6 +43,19 @@ final class CommandsTest extends TestCase {
                  ->with("Client e@e.e added");
         $cmd->execute();
     }
+    public function testAddCsvCommandAddsClientsAndInforms(): void {
+        $builder = (new ClientBuilder())->setFirstname('a')->setLastname('b')->setEmail('e@e.e')
+            ->setPhonenumber1('8')->setPhonenumber2('8')->setComment('f');
+        $client = new Client('a', 'b', 'e@e.e', '8', '8', 'f');
+        $cmd = new AddCommand($builder, $this->storage, $this->out);
+        $this->storage->expects($this->once())
+                 ->method('add')
+                 ->with($client);
+        $this->out->expects($this->once())
+                 ->method('printSuccess')
+                 ->with("Client e@e.e added");
+        $cmd->execute();
+    }
     public function testDeleteCommandDeletsClientAndInforms(): void {
         $cmd = new DeleteCommand("email", $this->storage, $this->out);
         $this->storage->expects($this->once())

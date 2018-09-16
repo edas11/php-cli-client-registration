@@ -15,13 +15,15 @@ class HelpCommand implements Command{
 
     public function execute() {
         $helpMsg = [
-            new HelpMessage('add', 'Adds client.', 'cust-reg.php add firstname lastname email phonenumber1 phonenumber2 comment'),
-            new HelpMessage('edit', 'Edits client.', 'cust-reg.php edit [--firstname=new-val] [--lastname=new-val] [--email=new-val] [--phonenumber1=new-val] [--phonenumber2=new-val] [--comment=new-val] client-email'),
-            new HelpMessage('delete', 'Deletes client.', 'cust-reg.php delete client-email'),
-            new HelpMessage('list', 'Lists customers.', 'cust-reg.php list'),
-            new HelpMessage('help', 'Prints this help message.', 'cust-reg.php list')
+            new HelpMessage('add', 'Adds one client.', 'add "firstname" "lastname" "email" "phonenumber1" "phonenumber2" "comment"'),
+            new HelpMessage('add --csv', 'Adds clients from csv.', 'add --csv="path/to/csv"'),
+            new HelpMessage('edit', 'Edits client.', 'edit [--firstname="new value"] [--lastname="new value"] [--email="new value"] [--phonenumber1="new value"] [--phonenumber2="new value"] [--comment="new value"] "client email"'),
+            new HelpMessage('delete', 'Deletes a client.', 'delete "client email"'),
+            new HelpMessage('list', 'Lists clients.', 'list'),
+            new HelpMessage('help', 'Prints this help message.', 'help'),
+            new HelpMessage('end', 'Deletes data file.', 'end')
         ];
-        $this->out->printHelpMessage($helpMsg);
+        $this->out->printHelpMessage('cust-reg.php is a simple clien registration program. It expects one of the following commands:', $helpMsg);
     }
     
 }

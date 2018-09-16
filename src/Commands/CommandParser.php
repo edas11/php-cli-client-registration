@@ -66,7 +66,7 @@ class CommandParser{
         global $argv;
         $optionsAndArguments = $this->parseOptionsAndArguments();
         if (count($optionsAndArguments)==0) throw new \LengthException('Add commands must get parameters');
-        if (count($optionsAndArguments)==1) return $this->getAddCsvCommand($optionsAndArguments);
+        if (count($optionsAndArguments)==1 && ($optionsAndArguments[0] instanceof Option)) return $this->getAddCsvCommand($optionsAndArguments);
         foreach($optionsAndArguments as $param){
             if ($param instanceof Option) throw new \InvalidArgumentException("Add commands must get only arguments (without --)");
         }

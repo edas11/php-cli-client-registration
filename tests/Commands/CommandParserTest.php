@@ -62,20 +62,20 @@ final class CommandParserTest extends TestCase {
         $argv = ['', 'add', '--csv=abc'];
         $this->assertEquals($this->cmdParser->getCommand(), new AddCsvCommand('abc', $this->storage, CliOutput::get()));
     }
-    public function testParsingAddCsvCommandThrowsErrorIfNotOptionGiven(): void {   
+    public function testParsingAddCommandThrowsErrorIfOneArgumentGiven(): void {   
         global $argv;
         $argv = ['', 'add', 'fdhdg'];
 
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Add Csv commands must get one option --csv');
+        $this->expectException(\LengthException::class);
+        $this->expectExceptionMessage('Add commands must get 6 arguments');
         $this->cmdParser->getCommand();
     }
     public function testParsingAddCsvCommandThrowsErrorIfMoreThanOneParamGiven(): void {   
         global $argv;
         $argv = ['', 'add', 'fdhdg --csv=ll'];
 
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Add Csv commands must get one option --csv');
+        $this->expectException(\LengthException::class);
+        $this->expectExceptionMessage('Add commands must get 6 arguments');
         $this->cmdParser->getCommand();
     }
     public function testParsingAddCsvCommandThrowsErrorIfWrongOptionGiven(): void {   

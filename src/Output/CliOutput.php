@@ -16,7 +16,8 @@ class CliOutput{
         return self::$outputInstance;
     }
 
-    public function printHelpMessage(array $helpMsg): void {
+    public function printHelpMessage(string $info, array $helpMsg): void {
+        echo "$info\n\n";
         foreach($helpMsg as $msg) {
             if (!$msg instanceof HelpMessage) { 
                 throw new \InvalidArgumentException("printHelpMessage expects array of HelpMessage objects");

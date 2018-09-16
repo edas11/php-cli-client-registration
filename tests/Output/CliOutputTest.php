@@ -10,13 +10,15 @@ use Edvardas\Clients\Clients;
 final class CliOutputTest extends TestCase {
     public function testCanPrintHelpMessagesFromMessageArray(): void {
         $out = CliOutput::get();
+        $info = 'smth';
         $msg1 = new HelpMessage("a", "b", "c");
         $msg2 = new HelpMessage("d", "e", "f");
         $msg3 = new HelpMessage("g", "h", "i");
         $msg = [$msg1, $msg2, $msg3];
-        $out->printHelpMessage($msg);
+        $out->printHelpMessage($info, $msg);
 
-        $expectedStr =  "a\nDescription: b\nUsage: c\n\n".
+        $expectedStr =  "$info\n\n".
+                        "a\nDescription: b\nUsage: c\n\n".
                         "d\nDescription: e\nUsage: f\n\n".
                         "g\nDescription: h\nUsage: i\n\n";
         $this->expectOutputString($expectedStr);
@@ -47,12 +49,12 @@ final class CliOutputTest extends TestCase {
     }
     public function testDoesntPrintHelpMessageIfMessagesArrayEmpty(): void {
         $out = CliOutput::get();
-        $out->printHelpMessage([]);
-        $this->expectOutputString("");
+        $out->printHelpMessage('', []);
+        $this->expectOutputString("\n\n");
     }
     public function testThrowsErrorIfHelpMessagesArrayHasNonMessageObjects(): void {
         $this->expectException(InvalidArgumentException::class);
         $out = CliOutput::get();
-        $out->printHelpMessage([null, $out]);
+        $out->printHelpMessage('', [null, $out]);
     }
 }

@@ -12,6 +12,7 @@ use Edvardas\Clients\SerializableClientsStorage;
 use Edvardas\Output\CliOutput;
 use Edvardas\Clients\ClientBuilder;
 use Edvardas\Clients\Client;
+use Edvardas\Clients\Clients;
 
 final class CommandsTest extends TestCase {
 
@@ -72,8 +73,8 @@ final class CommandsTest extends TestCase {
         $cmd->execute();
     }
     public function testListCommandPrintsAllClients(): void {
-        $clients = [new Client('a', 'b', 'g@g.g', '8', '8', 'c'),
-                    new Client('a', 'b', 'gg@g.g', '8', '8', 'c')];
+        $clients = new Clients([new Client('a', 'b', 'g@g.g', '8', '8', 'c'),
+                    new Client('a', 'b', 'gg@g.g', '8', '8', 'c')]);
         $cmd = new ListCommand($this->storage, $this->out);
         $this->storage->expects($this->once())
                  ->method('getAll')

@@ -2,6 +2,7 @@
 namespace Edvardas\Clients;
 
 use Edvardas\Clients\Client;
+use Edvardas\Clients\Clients;
 
 class SerializableClientsStorage{
 
@@ -40,8 +41,8 @@ class SerializableClientsStorage{
         return $res[0];
     }
 
-    public function getAll(): array {
-        return $this->clients;
+    public function getAll(): Clients {
+        return new Clients($this->clients);
     }
 
     private function findClient($email): array {

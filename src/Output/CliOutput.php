@@ -2,6 +2,7 @@
 namespace Edvardas\Output;
 
 use Edvardas\Commands\Messages\HelpMessage;
+use Edvardas\Clients\Clients;
 
 class CliOutput{
     
@@ -37,7 +38,7 @@ class CliOutput{
         echo 'Error: '.$errorMsg."\n";
     }
 
-    public function printClients(array $clients): void {
+    public function printClients(Clients $clients): void {
         echo "Firstname\tLastname\tEmail\tPhonenumber1\tPhonenumber2\tComment\n";
         foreach($clients as $client) {
             echo $client->getFirstname()."\t".

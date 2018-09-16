@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use Edvardas\Clients\SerializableClientsStorage;
 use Edvardas\Clients\Client;
+use Edvardas\Clients\Clients;
 use PHPUnit\Framework\TestCase;
 
 final class SerializableClientsStorageTest extends TestCase {
@@ -27,7 +28,7 @@ final class SerializableClientsStorageTest extends TestCase {
         $this->assertSame($this->data[2], $this->storage->get('tt@g.g'));
     }
     public function testCanGetAllClients(): void{
-        $this->assertSame($this->data, $this->storage->getAll());
+        $this->assertEquals(new Clients($this->data), $this->storage->getAll());
     }
     public function testThrowsExceptionIfAskedForNonexistentClient(): void {
         $this->expectException(\OutOfBoundsException::class);
@@ -36,7 +37,7 @@ final class SerializableClientsStorageTest extends TestCase {
     }
     public function testCanDeleteClient(): void{
         $this->storage->delete('de@g.g');
-        $this->assertSame([$this->data[0], $this->data[2]], $this->storage->getAll());
+        $this->assertEquals(new Clients([$this->data[0], $this->data[2]]), $this->storage->getAll());
         $this->expectException(\OutOfBoundsException::class);
         $this->expectExceptionMessage('Client with email de@g.g not found');
         $this->storage->get('de@g.g');
@@ -49,7 +50,7 @@ final class SerializableClientsStorageTest extends TestCase {
     public function testCanReplaceClient(): void{
         $new = new Client('a', 'a', 'new@g.g', '', '', '');
         $this->storage->replace('de@g.g', $new);
-        $this->assertSame([$this->data[0], $new, $this->data[2]], $this->storage->getAll());
+        $this->assertEquals(new Clients([$this->data[0], $new, $this->data[2]]), $this->storage->getAll());
         $this->expectException(\OutOfBoundsException::class);
         $this->expectExceptionMessage('Client with email de@g.g not found');
         $this->storage->get('de@g.g');

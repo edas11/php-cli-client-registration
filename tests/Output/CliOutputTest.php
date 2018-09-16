@@ -5,6 +5,7 @@ use Edvardas\Output\CliOutput;
 use Edvardas\Commands\Messages\HelpMessage;
 use PHPUnit\Framework\TestCase;
 use Edvardas\Clients\Client;
+use Edvardas\Clients\Clients;
 
 final class CliOutputTest extends TestCase {
     public function testCanPrintHelpMessagesFromMessageArray(): void {
@@ -21,8 +22,8 @@ final class CliOutputTest extends TestCase {
         $this->expectOutputString($expectedStr);
     }
     public function testCanPrintClientsInfo(): void {
-        $clients = [new Client('a', 'b', 'g@g.g', '8', '8', 'c'),
-            new Client('a', 'b', 'gg@g.g', '8', '8', 'c')];
+        $clients = new Clients([new Client('a', 'b', 'g@g.g', '8', '8', 'c'),
+            new Client('a', 'b', 'gg@g.g', '8', '8', 'c')]);
         $out = CliOutput::get();
         $out->printClients($clients);
         $this->expectOutputString("Firstname\tLastname\tEmail\tPhonenumber1\tPhonenumber2\tComment\n".

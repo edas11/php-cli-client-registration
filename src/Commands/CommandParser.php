@@ -37,6 +37,9 @@ class CommandParser{
             case 'list':
                 $cmd = $this->getListCommand();
                 break;
+            case 'end':
+                $cmd = $this->getEndCommand();
+                break;
             default:
                 throw new \InvalidArgumentException("Unknown command: $mainCommand");
         }
@@ -95,6 +98,10 @@ class CommandParser{
 
     private function getListCommand() {
         return new ListCommand($this->storage, CliOutput::get());
+    }
+
+    private function getEndCommand() {
+        return new EndCommand(CliOutput::get());
     }
 
     private function getEditCommand() {

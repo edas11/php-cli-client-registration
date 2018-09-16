@@ -4,6 +4,7 @@ declare(strict_types=1);
 use Edvardas\Commands\CommandParser;
 use PHPUnit\Framework\TestCase;
 use Edvardas\Commands\AddCommand;
+use Edvardas\Commands\EndCommand;
 use Edvardas\Commands\AddCsvCommand;
 use Edvardas\Commands\DeleteCommand;
 use Edvardas\Commands\EditCommand;
@@ -122,6 +123,12 @@ final class CommandParserTest extends TestCase {
 
         $argv = ['', 'delete', 'email'];
         $this->assertEquals($this->cmdParser->getCommand(), new DeleteCommand('email', $this->storage, CliOutput::get()));
+    }
+    public function testParsesEndCommand(): void {   
+        global $argv;
+
+        $argv = ['', 'end', 'whatever'];
+        $this->assertEquals($this->cmdParser->getCommand(), new EndCommand(CliOutput::get()));
     }
     public function testParsingDeleteCommandThrowsErrorIfNoEmail(): void {   
         global $argv;

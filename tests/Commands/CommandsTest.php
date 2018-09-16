@@ -22,6 +22,7 @@ final class CommandsTest extends TestCase {
     protected function setUp() {
         $this->storage = $this->getMockBuilder(SerializableClientsStorage::class)
                 ->setMethods(['add', 'delete', 'get', 'getAll', 'replace'])
+                ->disableOriginalConstructor()
                 ->getMock();
         $this->out = $this->getMockBuilder(CliOutput::class)
                 ->setMethods(['printSuccess', 'printClients', 'printHelpMessage'])

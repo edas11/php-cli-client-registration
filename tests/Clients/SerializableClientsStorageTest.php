@@ -29,7 +29,7 @@ final class SerializableClientsStorageTest extends TestCase {
     }
     public function testThrowsExceptionIfAddingClientWithNotUniqueEmail(): void {
         $this->expectException(\DomainException::class);
-        $this->expectExceptionMessage("Email ed@g.g already exists");
+        $this->expectExceptionMessage("Client with email ed@g.g already exists");
         $this->storage->add($this->data[0]);
         $this->storage->add($this->data[0]);
     }
@@ -53,13 +53,18 @@ final class SerializableClientsStorageTest extends TestCase {
         $this->expectExceptionMessage('Client with email abc not found');
         $this->storage->delete('abc');
     }
-    public function testCanReplaceClient(): void{
+    public function testCanReplaceClientWithDifferentEmail(): void{
         $new = new Client('a', 'a', 'new@g.g', '', '', '');
         $this->storage->replace('de@g.g', $new);
         $this->assertEquals(new Clients([$this->data[0], $new, $this->data[2]]), $this->storage->getAll());
         $this->expectException(\OutOfBoundsException::class);
         $this->expectExceptionMessage('Client with email de@g.g not found');
         $this->storage->get('de@g.g');
+    }
+    public function testCanReplaceClientWithSameEmail(): void{
+        $new = new Client('abra', 'a', 'de@g.g', '', '', '');
+        $this->storage->replace('de@g.g', $new);
+        $this->assertEquals(new Clients([$this->data[0], $new, $this->data[2]]), $this->storage->getAll());
     }
     public function testThrowsExceptionIfAskedToReplaceNonexistentClient(): void{
         $this->expectException(\OutOfBoundsException::class);
@@ -68,7 +73,7 @@ final class SerializableClientsStorageTest extends TestCase {
     }
     public function testThrowsExceptionIfReplacingClientWithOneHavingNotUniqueEmail(): void {
         $this->expectException(\DomainException::class);
-        $this->expectExceptionMessage("Email tt@g.g already exists");
+        $this->expectExceptionMessage("Client with email tt@g.g already exists");
         $new = new Client('a', 'a', 'tt@g.g', '', '', '');
         $this->storage->replace('de@g.g', $new);
     }

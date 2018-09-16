@@ -10,8 +10,11 @@ use Edvardas\Clients\ClientBuilder;
 use Edvardas\Clients\SerializableClientsStorage;
 
 class CommandParser{
+
+    private $storage;
     
-    public function __construct(){
+    public function __construct(SerializableClientsStorage $storage){
+        $this->storage = $storage;
     }
 
     public function getCommand(): Command {
@@ -67,13 +70,13 @@ class CommandParser{
             ->setLastname($optionsAndArguments[1]->getValue())->setEmail($optionsAndArguments[2]->getValue())
             ->setPhonenumber1($optionsAndArguments[3]->getValue())->setPhonenumber2($optionsAndArguments[4]->getValue())
             ->setComment($optionsAndArguments[5]->getValue());
-        return new AddCommand($builder, new SerializableClientsStorage(), CliOutput::get());
+        return new AddCommand($builder, $this->storage, CliOutput::get());
     }
 
     private function getDeleteCommand() {
         global $argv;
         if (count($argv)!==3) throw new \LengthException('Delete command must get 1 email argument');
-        return new DeleteCommand($argv[2], new SerializableClientsStorage(), CliOutput::get());
+        return new DeleteCommand($argv[2], $this->storage, CliOutput::get());
     }
 
     private function getHelpCommand() {
@@ -81,7 +84,7 @@ class CommandParser{
     }
 
     private function getListCommand() {
-        return new ListCommand(new SerializableClientsStorage(), CliOutput::get());
+        return new ListCommand($this->storage, CliOutput::get());
     }
 
     private function getEditCommand() {
@@ -93,7 +96,7 @@ class CommandParser{
         $builder = $this->parseEditCommandOptions($optionsAndArguments);
 
         return new EditCommand($optionsAndArguments[count($optionsAndArguments)-1]->getValue(), $builder
-            , new SerializableClientsStorage(), CliOutput::get());
+            , $this->storage, CliOutput::get());
     }
 
     private function throwExceptionIfEditParamsBad(array $optionsAndArguments): void {

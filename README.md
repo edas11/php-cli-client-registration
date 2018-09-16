@@ -15,7 +15,7 @@ Usage: add --csv="path/to/csv"
 
 edit<br/>
 Description: Edits client.<br/>
-Usage: edit [--firstname="new value"] [--lastname="new value"] [--email="new value"] [--phonenumber1="new value"] [--phonenumber2="new value"] [--comment="new value"] "client email"
+Usage: edit [--firstname="new value"] [--lastname="new value"] [--email="new value"] [--phonenumber1="new value"] [--phonenumber2="new value"] [--comment="new value"] "client email". For example: php cust-reg.php edit --lastname="Trump" someone@something.smth
 
 delete<br/>
 Description: Deletes a client.<br/>

@@ -50,6 +50,15 @@ final class CommandParserTest extends TestCase {
             ->setPhonenumber1('d')->setPhonenumber2('e')->setComment('f');
         $this->assertEquals($cmdParser->getCommand(), new AddCommand($builder, new SerializableClientsStorage(), CliOutput::get()));
     }
+    public function testParsingAddCommandThrowsExceptionIfGetsOptions(): void {   
+        global $argv;
+        $cmdParser = new CommandParser();
+        $argv = ['', 'add', '--asd=a', 'b', 'c', 'd', 'e', 'f', 'g'];
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Add commands must get only arguments (without --)');
+        $cmdParser->getCommand();
+    }
     public function testParsingAddCommandThrowsExceptionIfTooManyCmdArguments(): void {   
         global $argv;
         $cmdParser = new CommandParser();
@@ -156,8 +165,16 @@ final class CommandParserTest extends TestCase {
         global $argv;
         $cmdParser = new CommandParser(); 
         $argv = ['', 'edit', 'email'];
-            $this->expectException(\LengthException::class);
-            $this->expectExceptionMessage("Enter at least one option (with --)");
+        $this->expectException(\LengthException::class);
+        $this->expectExceptionMessage("Enter at least one option (with --)");
+        $cmdParser->getCommand();
+    }
+    public function testParsingEditThrowsExceptionIfNoParameters(): void {
+        global $argv;
+        $cmdParser = new CommandParser(); 
+        $argv = ['', 'edit'];
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionMessage('Edit command expects a few options (with --) followed by one email argument');
         $cmdParser->getCommand();
     }
     

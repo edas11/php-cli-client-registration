@@ -3,6 +3,8 @@ namespace Edvardas\Commands;
 
 use Edvardas\Commands\HelpCommand;
 use Edvardas\Commands\AddCommand;
+use Edvardas\Commands\Parameters\Argument;
+use Edvardas\Commands\Parameters\Option;
 use Edvardas\Output\CliOutput;
 use Edvardas\Clients\ClientBuilder;
 use Edvardas\Clients\SerializableClientsStorage;
@@ -38,11 +40,33 @@ class CommandParser{
         return $cmd;
     }
 
+    private function parseOptionsAndArguments(): array {
+        global $argv;
+        $optionsAndArguments = [];
+        for($i=2; $i<count($argv); $i++) {
+            if (substr($argv[$i], 0, 2)==='--') {
+                $field = explode('=', $argv[$i], 2);
+                $fieldName = substr($field[0], 2);
+                if (count($field)!=2) throw new \InvalidArgumentException("Option $fieldName has no value");
+                array_push($optionsAndArguments, new Option($fieldName, $field[1]));
+            } else {
+                array_push($optionsAndArguments, new Argument($argv[$i]));
+            }
+        }
+        return $optionsAndArguments;
+    }
+
     private function getAddCommand() {
         global $argv;
-        if (count($argv)!==8) throw new \LengthException('Add commands must get 6 arguments');
-        $builder = (new ClientBuilder())->setFirstname($argv[2])->setLastname($argv[3])->setEmail($argv[4])
-            ->setPhonenumber1($argv[5])->setPhonenumber2($argv[6])->setComment($argv[7]);
+        $optionsAndArguments = $this->parseOptionsAndArguments();
+        foreach($optionsAndArguments as $param){
+            if ($param instanceof Option) throw new \InvalidArgumentException("Add commands must get only arguments (without --)");
+        }
+        if (count($optionsAndArguments)!==6) throw new \LengthException('Add commands must get 6 arguments');
+        $builder = (new ClientBuilder())->setFirstname($optionsAndArguments[0]->getValue())
+            ->setLastname($optionsAndArguments[1]->getValue())->setEmail($optionsAndArguments[2]->getValue())
+            ->setPhonenumber1($optionsAndArguments[3]->getValue())->setPhonenumber2($optionsAndArguments[4]->getValue())
+            ->setComment($optionsAndArguments[5]->getValue());
         return new AddCommand($builder, new SerializableClientsStorage(), CliOutput::get());
     }
 
@@ -62,37 +86,36 @@ class CommandParser{
 
     private function getEditCommand() {
         global $argv;
+        $optionsAndArguments = $this->parseOptionsAndArguments();
 
-        $argAfterOptionsIndex = $this->getArgumentIndex();
+        $this->throwExceptionIfEditParamsBad($optionsAndArguments);
 
-        $builder = $this->parseEditCommandOptions($argAfterOptionsIndex);
+        $builder = $this->parseEditCommandOptions($optionsAndArguments);
 
-        return new EditCommand($argv[$argAfterOptionsIndex], $builder, new SerializableClientsStorage(), CliOutput::get());
+        return new EditCommand($optionsAndArguments[count($optionsAndArguments)-1]->getValue(), $builder
+            , new SerializableClientsStorage(), CliOutput::get());
     }
 
-    private function getArgumentIndex(): int {
-        global $argv;
-        $argAfterOptionsIndex = -1;
-
-        for($i=2; $i<count($argv); $i++) {
-            if ($argAfterOptionsIndex != -1) throw new \UnexpectedValueException('Edit command expects a few options (with --) followed by one email argument');
-            if (substr($argv[$i], 0, 2)!=='--') {
-                $argAfterOptionsIndex = $i;
+    private function throwExceptionIfEditParamsBad(array $optionsAndArguments): void {
+        $exception = new \UnexpectedValueException('Edit command expects a few options (with --) followed by one email argument');
+        if (count($optionsAndArguments)<1) throw $exception;
+        $argumentFound = false;
+        foreach($optionsAndArguments as $key=>$param) {
+            if ($param instanceof Argument){
+                $argumentFound = true;
+                if (count($optionsAndArguments)>$key+1) throw $exception;
             }
         }
-        if($argAfterOptionsIndex == -1) throw new \UnexpectedValueException('Edit command expects a few options (with --) followed by one email argument');
-        if($argAfterOptionsIndex == 2) throw new \LengthException('Enter at least one option (with --)');
-        return $argAfterOptionsIndex;
+        if(!$argumentFound) throw $exception;
+        if(count($optionsAndArguments) == 1) throw new \LengthException('Enter at least one option (with --)');
     }
 
-    private function parseEditCommandOptions($argAfterOptionsIndex): ClientBuilder {
+    private function parseEditCommandOptions($optionsAndArguments): ClientBuilder {
         global $argv;
         $builder = new ClientBuilder();
-        for($j=2; $j<$argAfterOptionsIndex; $j++) {
-            $fieldToChange = explode('=', $argv[$j], 2);
-            $fieldName = substr($fieldToChange[0], 2);
-            if (count($fieldToChange)!=2) throw new \InvalidArgumentException("Option $fieldName has no value");
-            $fieldValue = $fieldToChange[1];
+        for($j=0; $j<count($optionsAndArguments)-1; $j++) {
+            $fieldName = $optionsAndArguments[$j]->getName();
+            $fieldValue = $optionsAndArguments[$j]->getValue();
             switch ($fieldName) {
                 case 'firstname':
                     $builder->setFirstname($fieldValue);

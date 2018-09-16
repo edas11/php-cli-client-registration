@@ -1,5 +1,5 @@
 # Requirements
-Requires php 7.2 and composer.
+Requires php 7.2.10 and composer.
 Use "composer dump_autoload" or "composer install" in project directory before using this program
 
 # About

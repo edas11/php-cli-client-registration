@@ -27,6 +27,12 @@ final class SerializableClientsStorageTest extends TestCase {
         $this->assertSame($this->data[1], $this->storage->get('de@g.g'));
         $this->assertSame($this->data[2], $this->storage->get('tt@g.g'));
     }
+    public function testThrowsExceptionIfAddingClientWithNotUniqueEmail(): void {
+        $this->expectException(\DomainException::class);
+        $this->expectExceptionMessage("Email ed@g.g already exists");
+        $this->storage->add($this->data[0]);
+        $this->storage->add($this->data[0]);
+    }
     public function testCanGetAllClients(): void{
         $this->assertEquals(new Clients($this->data), $this->storage->getAll());
     }
@@ -59,5 +65,11 @@ final class SerializableClientsStorageTest extends TestCase {
         $this->expectException(\OutOfBoundsException::class);
         $this->expectExceptionMessage('Client with email abc not found');
         $this->storage->replace('abc', new Client('a', 'a', 'new@g.g', '', '', ''));
+    }
+    public function testThrowsExceptionIfReplacingClientWithOneHavingNotUniqueEmail(): void {
+        $this->expectException(\DomainException::class);
+        $this->expectExceptionMessage("Email tt@g.g already exists");
+        $new = new Client('a', 'a', 'tt@g.g', '', '', '');
+        $this->storage->replace('de@g.g', $new);
     }
 }

@@ -18,12 +18,11 @@ class Validator{
         $testVal = str_replace(')', '', $testVal);
         return strlen($testVal)<20;
     }
-    public static function unique($value, array $otherValues): bool{
-    // for primitive types
+    /*public static function unique($value, array $otherValues): bool{
         foreach($otherValues as $otherValue) {
             if ($otherValue === $value) return false;
         }
         return true;
-    }
+    }*/
     
 }

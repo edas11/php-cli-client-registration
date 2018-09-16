@@ -3,6 +3,7 @@ namespace Edvardas\Clients;
 
 use Edvardas\Clients\Client;
 use Edvardas\Clients\Clients;
+use Edvardas\Validation\Validator;
 
 class SerializableClientsStorage{
 
@@ -13,8 +14,9 @@ class SerializableClientsStorage{
         $this->serialize = $serialize;
     }
 
-    public function add(Client $client): bool {
-        array_push($this->clients, $client);
+    public function add(Client $newClient): bool {
+        $this->throwExceptionIfEmailNotUnique($newClient);
+        array_push($this->clients, $newClient);
         return true;
     }
 
@@ -30,6 +32,7 @@ class SerializableClientsStorage{
     public function replace(string $email, Client $newClient): bool {
         $res = $this->findClient($email);
         if (count($res)===0) throw new \OutOfBoundsException("Client with email $email not found");
+        $this->throwExceptionIfEmailNotUnique($newClient);
         $this->clients = array_replace($this->clients, [array_keys($res)[0] => $newClient]);
         return true;
     }
@@ -49,5 +52,10 @@ class SerializableClientsStorage{
         return array_filter($this->clients, function(Client $client) use ($email) {
             return $client->getEmail() === $email;
         });
+    }
+    private function throwExceptionIfEmailNotUnique(Client $testClient) {
+        foreach($this->clients as $client) {
+            if ($client->getEmail()===$testClient->getEmail()) throw new \DomainException('Email '.$testClient->getEmail().' already exists');
+        }
     }
 }

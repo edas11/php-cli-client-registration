@@ -4,7 +4,7 @@ namespace Edvardas\Commands;
 use Edvardas\Commands\HelpCommand;
 use Edvardas\Commands\AddCommand;
 use Edvardas\Output\CliOutput;
-use Edvardas\Clients\ClientInputData;
+use Edvardas\Clients\ClientBuilder;
 use Edvardas\Clients\SerializableClientsStorage;
 
 class CommandParser{
@@ -41,8 +41,9 @@ class CommandParser{
     private function getAddCommand() {
         global $argv;
         if (count($argv)!==8) throw new \LengthException('Add commands must get 6 arguments');
-        $input = ClientInputData::create($argv[2], $argv[3], $argv[4], $argv[5], $argv[6], $argv[7]);
-        return new AddCommand($input, new SerializableClientsStorage(), CliOutput::get());
+        $builder = (new ClientBuilder())->setFirstname($argv[2])->setLastname($argv[3])->setEmail($argv[4])
+            ->setPhonenumber1($argv[5])->setPhonenumber2($argv[6])->setComment($argv[7]);
+        return new AddCommand($builder, new SerializableClientsStorage(), CliOutput::get());
     }
 
     private function getDeleteCommand() {
@@ -64,9 +65,9 @@ class CommandParser{
 
         $argAfterOptionsIndex = $this->getArgumentIndex();
 
-        $input = $this->parseEditCommandOptions($argAfterOptionsIndex);
+        $builder = $this->parseEditCommandOptions($argAfterOptionsIndex);
 
-        return new EditCommand($argv[$argAfterOptionsIndex], $input, new SerializableClientsStorage(), CliOutput::get());
+        return new EditCommand($argv[$argAfterOptionsIndex], $builder, new SerializableClientsStorage(), CliOutput::get());
     }
 
     private function getArgumentIndex(): int {
@@ -84,9 +85,9 @@ class CommandParser{
         return $argAfterOptionsIndex;
     }
 
-    private function parseEditCommandOptions($argAfterOptionsIndex): ClientInputData {
+    private function parseEditCommandOptions($argAfterOptionsIndex): ClientBuilder {
         global $argv;
-        $input = ClientInputData::createEmpty();
+        $builder = new ClientBuilder();
         for($j=2; $j<$argAfterOptionsIndex; $j++) {
             $fieldToChange = explode('=', $argv[$j], 2);
             $fieldName = substr($fieldToChange[0], 2);
@@ -94,28 +95,28 @@ class CommandParser{
             $fieldValue = $fieldToChange[1];
             switch ($fieldName) {
                 case 'firstname':
-                    $input->firstname = $fieldValue;
+                    $builder->setFirstname($fieldValue);
                     break;
                 case 'lastname':
-                    $input->lastname = $fieldValue;
+                    $builder->setLastname($fieldValue);
                     break;
                 case 'email':
-                    $input->email = $fieldValue;
+                    $builder->setEmail($fieldValue);
                     break;
                 case 'phonenumber1':
-                    $input->phonenumber1 = $fieldValue;
+                    $builder->setPhonenumber1($fieldValue);
                     break;
                 case 'phonenumber2':
-                    $input->phonenumber2 = $fieldValue;
+                    $builder->setPhonenumber2($fieldValue);
                     break;
                 case 'comment':
-                    $input->comment = $fieldValue;
+                    $builder->setComment($fieldValue);
                     break;
                 default:
                     throw new \InvalidArgumentException("Option $fieldName is not valid");
             }
         }
-        return $input;
+        return $builder;
     }
     
 }

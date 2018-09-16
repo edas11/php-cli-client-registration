@@ -3,7 +3,6 @@ namespace Edvardas\Clients;
 
 use Edvardas\Validation\Validator;
 
-
 class Client{
     
     private $firstname;

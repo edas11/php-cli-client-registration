@@ -9,7 +9,7 @@ use Edvardas\Commands\EditCommand;
 use Edvardas\Commands\ListCommand;
 use Edvardas\Commands\HelpCommand;
 use Edvardas\Output\CliOutput;
-use Edvardas\Clients\ClientInputData;
+use Edvardas\Clients\ClientBuilder;
 use Edvardas\Clients\SerializableClientsStorage;
 
 final class CommandParserTest extends TestCase {
@@ -46,8 +46,9 @@ final class CommandParserTest extends TestCase {
         $cmdParser = new CommandParser();
 
         $argv = ['', 'add', 'a', 'b', 'c', 'd', 'e', 'f'];
-        $input = ClientInputData::create('a', 'b', 'c', 'd', 'e', 'f');
-        $this->assertEquals($cmdParser->getCommand(), new AddCommand($input, new SerializableClientsStorage(), CliOutput::get()));
+        $builder = (new ClientBuilder())->setFirstname('a')->setLastname('b')->setEmail('c')
+            ->setPhonenumber1('d')->setPhonenumber2('e')->setComment('f');
+        $this->assertEquals($cmdParser->getCommand(), new AddCommand($builder, new SerializableClientsStorage(), CliOutput::get()));
     }
     public function testParsingAddCommandThrowsExceptionIfTooManyCmdArguments(): void {   
         global $argv;
@@ -98,26 +99,22 @@ final class CommandParserTest extends TestCase {
         $cmdParser = new CommandParser();
 
         $argv = ['', 'edit', '--firstname=bob', 'email'];
-        $input = ClientInputData::createEmpty();
-        $input->firstname='bob';
-        $this->assertEquals($cmdParser->getCommand(), new EditCommand('email', $input, new SerializableClientsStorage(), CliOutput::get()));
+        $builder = (new ClientBuilder())->setFirstname('bob');
+        $this->assertEquals($cmdParser->getCommand(), new EditCommand('email', $builder, new SerializableClientsStorage(), CliOutput::get()));
 
         $argv = ['', 'edit', '--firstname=bob', '--lastname=bob', '--email=g@g.g', '--phonenumber1=8',
             '--phonenumber2=8', '--comment=aa', 'email'];
-        $input = ClientInputData::create('bob', 'bob', 'g@g.g', '8', '8', 'aa');
-        $this->assertEquals($cmdParser->getCommand(), new EditCommand('email', $input, new SerializableClientsStorage(), CliOutput::get()));
+        $builder = (new ClientBuilder())->setFirstname('bob')->setLastname('bob')->setEmail('g@g.g')
+            ->setPhonenumber1('8')->setPhonenumber2('8')->setComment('aa');
+        $this->assertEquals($cmdParser->getCommand(), new EditCommand('email', $builder, new SerializableClientsStorage(), CliOutput::get()));
 
         $argv = ['', 'edit', '--firstname=bob', '--comment=bob=good', 'email'];
-        $input = ClientInputData::createEmpty();
-        $input->firstname='bob';
-        $input->comment='bob=good';
-        $this->assertEquals($cmdParser->getCommand(), new EditCommand('email', $input, new SerializableClientsStorage(), CliOutput::get()));
+        $builder = (new ClientBuilder())->setFirstname('bob')->setComment('bob=good');
+        $this->assertEquals($cmdParser->getCommand(), new EditCommand('email', $builder, new SerializableClientsStorage(), CliOutput::get()));
 
         $argv = ['', 'edit', '--firstname=', '--comment=bob=good', 'email'];
-        $input = ClientInputData::createEmpty();
-        $input->firstname='';
-        $input->comment='bob=good';
-        $this->assertEquals($cmdParser->getCommand(), new EditCommand('email', $input, new SerializableClientsStorage(), CliOutput::get()));
+        $builder = (new ClientBuilder())->setFirstname('')->setComment('bob=good');
+        $this->assertEquals($cmdParser->getCommand(), new EditCommand('email', $builder, new SerializableClientsStorage(), CliOutput::get()));
     }
     public function testParsingEditThrowsExceptionIfEmailParameterIsBetweenOptions(): void {
         global $argv;

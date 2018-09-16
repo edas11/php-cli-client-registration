@@ -1,7 +1,7 @@
 <?php
 namespace Edvardas\Commands;
 
-use Edvardas\Clients\ClientInputData;
+use Edvardas\Clients\ClientBuilder;
 use Edvardas\Clients\Client;
 use Edvardas\Commands\Command;
 use Edvardas\Clients\SerializableClientsStorage;
@@ -9,20 +9,18 @@ use Edvardas\Output\CliOutput;
 
 class AddCommand implements Command{
     
-    private $clientInput;
+    private $clientBuilder;
     private $storage;
     private $output;
 
-    public function __construct(ClientInputData $input, SerializableClientsStorage $storage, CliOutput $out){
-        $this->clientInput = $input;
+    public function __construct(ClientBuilder $builder, SerializableClientsStorage $storage, CliOutput $out){
+        $this->clientBuilder = $builder;
         $this->storage = $storage;
         $this->output = $out;
     }
 
     public function execute(){
-        $clientToAdd = new Client($this->clientInput->firstname, $this->clientInput->lastname,
-            $this->clientInput->email, $this->clientInput->phonenumber1, $this->clientInput->phonenumber2,
-            $this->clientInput->comment);
+        $clientToAdd = $this->clientBuilder->build();
         $this->storage->add($clientToAdd);
         $this->output->printSuccess("Client ".$clientToAdd->getEmail()." added");
     }

@@ -10,7 +10,7 @@ use Edvardas\Commands\ListCommand;
 use Edvardas\Commands\HelpCommand;
 use Edvardas\Clients\SerializableClientsStorage;
 use Edvardas\Output\CliOutput;
-use Edvardas\Clients\ClientInputData;
+use Edvardas\Clients\ClientBuilder;
 use Edvardas\Clients\Client;
 
 final class CommandsTest extends TestCase {
@@ -29,10 +29,10 @@ final class CommandsTest extends TestCase {
     }
 
     public function testAddCommandAddsClientAndInforms(): void {
-        $input = ClientInputData::create('a', 'b', 'e@e.e', '8', '8', 'f');
-        $client = new Client($input->firstname, $input->lastname, $input->email, $input->phonenumber1,
-            $input->phonenumber2, $input->comment);
-        $cmd = new AddCommand($input, $this->storage, $this->out);
+        $builder = (new ClientBuilder())->setFirstname('a')->setLastname('b')->setEmail('e@e.e')
+            ->setPhonenumber1('8')->setPhonenumber2('8')->setComment('f');
+        $client = new Client('a', 'b', 'e@e.e', '8', '8', 'f');
+        $cmd = new AddCommand($builder, $this->storage, $this->out);
         $this->storage->expects($this->once())
                  ->method('add')
                  ->with($client);
@@ -52,14 +52,12 @@ final class CommandsTest extends TestCase {
         $cmd->execute();
     }
     public function testEditCommandReplacesClientAndInforms(): void {
-        $input = ClientInputData::createEmpty();
-        $input->firstname = 'newname';
-        $input->comment = 'newcomment';
-        $input->email = 'new@g.g';
+        $builder = (new ClientBuilder())->setFirstname('newname')->setEmail('new@g.g')
+            ->setComment('newcomment');
         $email = 'g@g.g';
         $clientOld = new Client('oldname', 'b', 'g@g.g', '8', '8', 'oldcomment');
         $clientNew = new Client('newname', 'b', 'new@g.g', '8', '8', 'newcomment');
-        $cmd = new EditCommand($email, $input, $this->storage, $this->out);
+        $cmd = new EditCommand($email, $builder, $this->storage, $this->out);
 
         $this->storage->expects($this->once())
                 ->method('get')

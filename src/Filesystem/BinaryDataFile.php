@@ -31,11 +31,11 @@ class BinaryDataFile extends File {
     public function save(string $content): void {
         if (is_writable($this->fileName)) {
             $dataFile = fopen($this->fileName, "wb");
-            if ($dataFile===false) throw new \Exception("Cannot write to data file $fileName");
+            if ($dataFile===false) throw new \Exception("Cannot write to data file $this->fileName");
             $written = fwrite($dataFile, $content);
-            if ($written<=0) throw new \Exception("Nothing writen to data file $fileName");
+            if ($written<=0) throw new \Exception("Nothing writen to data file $this->fileName");
         } else {
-            throw new \Exception("Cannot write to data file $fileName");
+            throw new \Exception("Cannot write to data file $this->fileName");
         }
     }
 

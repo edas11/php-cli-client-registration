@@ -29,7 +29,7 @@ class AddCsvCommand implements Command{
                 , $csvData->getAt(3), $csvData->getAt(4), $csvData->getAt(5));
             try{
                 $this->storage->add($clientToAdd);
-            } catch(\Exception $e) {
+            } catch(\DomainException $e) {
                 $this->output->printWarning("Client exists, skipping");
             }
         }

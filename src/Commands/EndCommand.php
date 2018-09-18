@@ -15,7 +15,7 @@ class EndCommand implements Command{
 
     public function execute() {
         $status = unlink('./client-reg-data');
-        if (!$status) throw new \Exeception('Couldnt delete data file');
+        if (!$status) throw new \Exception('Couldnt delete data file');
         $this->output->printSuccess('Data file deleted');
     }
 

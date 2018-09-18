@@ -20,7 +20,7 @@ class SerializableClientsStorage{
             $this->file = new BinaryDataFile('./client-reg-data');
             $this->initialiseClients($this->file->read());
         } else {
-            $this->file = new NullFile('');
+            $this->file = new NullFile();
         }
     }
 

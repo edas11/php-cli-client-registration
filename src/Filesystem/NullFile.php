@@ -6,7 +6,7 @@ use Edvardas\Filesystem\File;
 
 class NullFile extends File {
 
-    public function __construct(string $fileName) {
+    public function __construct() {
     }
 
     public function read(): string {

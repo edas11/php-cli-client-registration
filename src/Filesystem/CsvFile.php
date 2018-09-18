@@ -16,6 +16,7 @@ class CsvFile {
     }
     public function readLine(): DataSet {
         $data = fgetcsv($this->csvFile);
+        if ($data===null) throw new \Exception("null from csv file");
         if ($data[0]===null) throw new \Exception("Blank line in csv file detected, please remove it");
         if ($data===false) throw new \Exception("Cannot read line of file");
         return new DataSet($data);
